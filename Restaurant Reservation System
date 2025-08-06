@@ -1,0 +1,33 @@
+-- Create tables for tables, customers, and reservations
+CREATE TABLE Tables (
+    table_id INT PRIMARY KEY,
+    capacity INT
+);
+
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Reservations (
+    reservation_id INT PRIMARY KEY,
+    table_id INT,
+    customer_id INT,
+    reservation_date DATE,
+    FOREIGN KEY (table_id) REFERENCES Tables(table_id),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+-- Insert sample data
+INSERT INTO Tables VALUES (1, 4);
+INSERT INTO Customers VALUES (1, 'Mia');
+INSERT INTO Reservations VALUES (1, 1, 1, '2025-02-01');
+
+-- Query: Find available tables for a date
+SELECT t.table_id, t.capacity
+FROM Tables t
+WHERE t.table_id NOT IN (
+    SELECT r.table_id
+    FROM Reservations r
+    WHERE r.reservation_date = '2025-02-01'
+);

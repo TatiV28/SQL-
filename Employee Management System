@@ -1,0 +1,41 @@
+-- Create tables for employees, departments, and salaries
+CREATE TABLE Departments (
+    dept_id INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Employees (
+    emp_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    dept_id INT,
+    hire_date DATE,
+    FOREIGN KEY (dept_id) REFERENCES Departments(dept_id)
+);
+
+CREATE TABLE Salaries (
+    salary_id INT PRIMARY KEY,
+    emp_id INT,
+    salary_amount DECIMAL(10, 2),
+    effective_date DATE,
+    FOREIGN KEY (emp_id) REFERENCES Employees(emp_id)
+);
+
+-- Insert sample data
+INSERT INTO Departments VALUES (1, 'HR'), (2, 'IT'), (3, 'Finance');
+INSERT INTO Employees VALUES (1, 'John', 'Doe', 1, '2020-01-15'), (2, 'Jane', 'Smith', 2, '2019-06-10'), (3, 'Mike', 'Brown', 2, '2021-03-01');
+INSERT INTO Salaries VALUES (1, 1, 60000, '2020-01-15'), (2, 2, 75000, '2019-06-10'), (3, 3, 70000, '2021-03-01');
+
+-- Query: Find employees with salaries above average in their department
+WITH DeptAvg AS (
+    SELECT dept_id, AVG(salary_amount) AS avg_salary
+    FROM Employees e
+    JOIN Salaries s ON e.emp_id = s.emp_id
+    GROUP BY dept_id
+)
+SELECT e.first_name, e.last_name, d.dept_name, s.salary_amount
+FROM Employees e
+JOIN Departments d ON e.dept_id = d.dept_id
+JOIN Salaries s ON e.emp_id = s.emp_id
+JOIN DeptAvg da ON e.dept_id = da.dept_id
+WHERE s.salary_amount > da.avg_salary;

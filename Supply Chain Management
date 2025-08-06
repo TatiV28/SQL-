@@ -1,0 +1,32 @@
+-- Create tables for suppliers, products, and orders
+CREATE TABLE Suppliers (
+    supplier_id INT PRIMARY KEY,
+    supplier_name VARCHAR(50)
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(50),
+    supplier_id INT,
+    FOREIGN KEY (supplier_id) REFERENCES Suppliers(supplier_id)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    product_id INT,
+    order_date DATE,
+    quantity INT,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+-- Insert sample data
+INSERT INTO Suppliers VALUES (1, 'Acme Corp');
+INSERT INTO Products VALUES (1, 'Widget', 1);
+INSERT INTO Orders VALUES (1, 1, '2025-01-01', 100);
+
+-- Query: Find total orders by supplier
+SELECT s.supplier_name, SUM(o.quantity) AS total_ordered
+FROM Suppliers s
+JOIN Products p ON s.supplier_id = p.supplier_id
+JOIN Orders o ON p.product_id = o.product_id
+GROUP BY s.supplier_name;

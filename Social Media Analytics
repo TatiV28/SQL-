@@ -1,0 +1,35 @@
+-- Create tables for users, posts, and likes
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(50)
+);
+
+CREATE TABLE Posts (
+    post_id INT PRIMARY KEY,
+    user_id INT,
+    post_date DATE,
+    content VARCHAR(200),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Likes (
+    like_id INT PRIMARY KEY,
+    post_id INT,
+    user_id INT,
+    FOREIGN KEY (post_id) REFERENCES Posts(post_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Insert sample data
+INSERT INTO Users VALUES (1, 'Quinn');
+INSERT INTO Posts VALUES (1, 1, '2025-01-01', 'Hello World!');
+INSERT INTO Likes VALUES (1, 1, 1);
+
+-- Query: Find top posts by likes
+SELECT p.content, u.username, COUNT(l.like_id) AS like_count
+FROM Posts p
+JOIN Users u ON p.user_id = u.user_id
+LEFT JOIN Likes l ON p.post_id = l.post_id
+GROUP BY p.content, u.username
+ORDER BY like_count DESC
+LIMIT 5;

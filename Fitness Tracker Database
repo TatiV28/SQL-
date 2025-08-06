@@ -1,0 +1,31 @@
+-- Create tables for users, workouts, and progress
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Workouts (
+    workout_id INT PRIMARY KEY,
+    workout_type VARCHAR(50)
+);
+
+CREATE TABLE Progress (
+    progress_id INT PRIMARY KEY,
+    user_id INT,
+    workout_id INT,
+    workout_date DATE,
+    duration_minutes INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (workout_id) REFERENCES Workouts(workout_id)
+);
+
+-- Insert sample data
+INSERT INTO Users VALUES (1, 'Kelly');
+INSERT INTO Workouts VALUES (1, 'Running');
+INSERT INTO Progress VALUES (1, 1, 1, '2025-01-01', 30);
+
+-- Query: Calculate total workout time by user
+SELECT u.name, SUM(p.duration_minutes) AS total_minutes
+FROM Users u
+JOIN Progress p ON u.user_id = p.user_id
+GROUP BY u.name;

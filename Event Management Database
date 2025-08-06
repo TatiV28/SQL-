@@ -1,0 +1,33 @@
+-- Create tables for events, attendees, and venues
+CREATE TABLE Venues (
+    venue_id INT PRIMARY KEY,
+    venue_name VARCHAR(50),
+    location VARCHAR(50)
+);
+
+CREATE TABLE Events (
+    event_id INT PRIMARY KEY,
+    event_name VARCHAR(50),
+    venue_id INT,
+    event_date DATE,
+    FOREIGN KEY (venue_id) REFERENCES Venues(venue_id)
+);
+
+CREATE TABLE Attendees (
+    attendee_id INT PRIMARY KEY,
+    event_id INT,
+    name VARCHAR(50),
+    FOREIGN KEY (event_id) REFERENCES Events(event_id)
+);
+
+-- Insert sample data
+INSERT INTO Venues VALUES (1, 'City Hall', 'Downtown');
+INSERT INTO Events VALUES (1, 'Tech Conference', 1, '2025-03-01');
+INSERT INTO Attendees VALUES (1, 1, 'Chris'), (2, 1, 'Dana');
+
+-- Query: List events with attendee count
+SELECT e.event_name, v.venue_name, COUNT(a.attendee_id) AS attendee_count
+FROM Events e
+JOIN Venues v ON e.venue_id = v.venue_id
+LEFT JOIN Attendees a ON e.event_id = a.event_id
+GROUP BY e.event_name, v.venue_name;

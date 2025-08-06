@@ -1,0 +1,32 @@
+-- Create tables for warehouses, products, and inventory
+CREATE TABLE Warehouses (
+    warehouse_id INT PRIMARY KEY,
+    location VARCHAR(50)
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(50),
+    unit_price DECIMAL(10, 2)
+);
+
+CREATE TABLE Inventory (
+    inventory_id INT PRIMARY KEY,
+    warehouse_id INT,
+    product_id INT,
+    quantity INT,
+    FOREIGN KEY (warehouse_id) REFERENCES Warehouses(warehouse_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+-- Insert sample data
+INSERT INTO Warehouses VALUES (1, 'New York'), (2, 'Chicago');
+INSERT INTO Products VALUES (1, 'Widget', 10.00), (2, 'Gadget', 15.00);
+INSERT INTO Inventory VALUES (1, 1, 1, 100), (2, 1, 2, 50), (3, 2, 1, 75);
+
+-- Query: Identify products with low stock (< 60 units)
+SELECT w.location, p.product_name, i.quantity
+FROM Inventory i
+JOIN Warehouses w ON i.warehouse_id = w.warehouse_id
+JOIN Products p ON i.product_id = p.product_id
+WHERE i.quantity < 60;

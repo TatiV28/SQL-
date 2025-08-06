@@ -1,0 +1,35 @@
+-- Create tables for rooms, guests, and bookings
+CREATE TABLE Rooms (
+    room_id INT PRIMARY KEY,
+    room_type VARCHAR(50),
+    price_per_night DECIMAL(10, 2)
+);
+
+CREATE TABLE Guests (
+    guest_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Bookings (
+    booking_id INT PRIMARY KEY,
+    room_id INT,
+    guest_id INT,
+    check_in DATE,
+    check_out DATE,
+    FOREIGN KEY (room_id) REFERENCES Rooms(room_id),
+    FOREIGN KEY (guest_id) REFERENCES Guests(guest_id)
+);
+
+-- Insert sample data
+INSERT INTO Rooms VALUES (1, 'Single', 100.00), (2, 'Double', 150.00);
+INSERT INTO Guests VALUES (1, 'Ivy');
+INSERT INTO Bookings VALUES (1, 1, 1, '2025-02-01', '2025-02-05');
+
+-- Query: Find available rooms for a date range
+SELECT r.room_id, r.room_type
+FROM Rooms r
+WHERE r.room_id NOT IN (
+    SELECT b.room_id
+    FROM Bookings b
+    WHERE b.check_in <= '2025-02-03' AND b.check_out >= '2025-02-01'
+);

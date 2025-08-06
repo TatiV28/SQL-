@@ -1,0 +1,33 @@
+-- Create tables for patients, doctors, and visits
+CREATE TABLE Patients (
+    patient_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Doctors (
+    doctor_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    specialty VARCHAR(50)
+);
+
+CREATE TABLE Visits (
+    visit_id INT PRIMARY KEY,
+    patient_id INT,
+    doctor_id INT,
+    visit_date DATE,
+    diagnosis VARCHAR(100),
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
+
+-- Insert sample data
+INSERT INTO Patients VALUES (1, 'Sarah'), (2, 'Tom');
+INSERT INTO Doctors VALUES (1, 'Dr. Lee', 'Cardiology'), (2, 'Dr. Kim', 'Neurology');
+INSERT INTO Visits VALUES (1, 1, 1, '2025-01-05', 'Hypertension'), (2, 2, 2, '2025-01-10', 'Migraine');
+
+-- Query: Count visits per doctor by specialty
+SELECT d.specialty, d.name, COUNT(v.visit_id) AS visit_count
+FROM Doctors d
+LEFT JOIN Visits v ON d.doctor_id = v.doctor_id
+GROUP BY d.specialty, d.name
+ORDER BY visit_count DESC;

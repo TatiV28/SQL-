@@ -1,0 +1,32 @@
+-- Create tables for customers, agents, and tickets
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Agents (
+    agent_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Tickets (
+    ticket_id INT PRIMARY KEY,
+    customer_id INT,
+    agent_id INT,
+    issue_date DATE,
+    status VARCHAR(20),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (agent_id) REFERENCES Agents(agent_id)
+);
+
+-- Insert sample data
+INSERT INTO Customers VALUES (1, 'Grace');
+INSERT INTO Agents VALUES (1, 'Henry');
+INSERT INTO Tickets VALUES (1, 1, 1, '2025-01-01', 'Open'), (2, 1, 1, '2025-01-02', 'Closed');
+
+-- Query: Find open tickets by agent
+SELECT a.name AS agent_name, COUNT(t.ticket_id) AS open_tickets
+FROM Agents a
+LEFT JOIN Tickets t ON a.agent_id = t.agent_id
+WHERE t.status = 'Open'
+GROUP BY a.name;

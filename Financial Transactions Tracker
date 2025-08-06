@@ -1,0 +1,26 @@
+-- Create tables for accounts and transactions
+CREATE TABLE Accounts (
+    account_id INT PRIMARY KEY,
+    customer_name VARCHAR(50),
+    balance DECIMAL(10, 2)
+);
+
+CREATE TABLE Transactions (
+    transaction_id INT PRIMARY KEY,
+    account_id INT,
+    transaction_date DATE,
+    amount DECIMAL(10, 2),
+    type VARCHAR(10),
+    FOREIGN KEY (account_id) REFERENCES Accounts(account_id)
+);
+
+-- Insert sample data
+INSERT INTO Accounts VALUES (1, 'Eve', 5000.00), (2, 'Frank', 3000.00);
+INSERT INTO Transactions VALUES (1, 1, '2025-01-01', 1000.00, 'Deposit'), (2, 1, '2025-01-02', -500.00, 'Withdrawal');
+
+-- Query: Calculate account balance from transactions
+SELECT a.customer_name, a.account_id, 
+       SUM(CASE WHEN t.type = 'Deposit' THEN t.amount ELSE -t.amount END) AS calculated_balance
+FROM Accounts a
+LEFT JOIN Transactions t ON a.account_id = t.account_id
+GROUP BY a.customer_name, a.account_id;

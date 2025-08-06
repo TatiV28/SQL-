@@ -1,0 +1,31 @@
+-- Create tables for properties, agents, and sales
+CREATE TABLE Agents (
+    agent_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Properties (
+    property_id INT PRIMARY KEY,
+    address VARCHAR(100),
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE Sales (
+    sale_id INT PRIMARY KEY,
+    property_id INT,
+    agent_id INT,
+    sale_date DATE,
+    FOREIGN KEY (property_id) REFERENCES Properties(property_id),
+    FOREIGN KEY (agent_id) REFERENCES Agents(agent_id)
+);
+
+-- Insert sample data
+INSERT INTO Agents VALUES (1, 'Peter');
+INSERT INTO Properties VALUES (1, '123 Main St', 300000.00);
+INSERT INTO Sales VALUES (1, 1, 1, '2025-01-01');
+
+-- Query: List unsold properties
+SELECT p.address, p.price
+FROM Properties p
+LEFT JOIN Sales s ON p.property_id = s.property_id
+WHERE s.sale_id IS NULL;

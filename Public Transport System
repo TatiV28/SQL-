@@ -1,0 +1,32 @@
+-- Create tables for routes, buses, and tickets
+CREATE TABLE Routes (
+    route_id INT PRIMARY KEY,
+    route_name VARCHAR(50)
+);
+
+CREATE TABLE Buses (
+    bus_id INT PRIMARY KEY,
+    route_id INT,
+    capacity INT,
+    FOREIGN KEY (route_id) REFERENCES Routes(route_id)
+);
+
+CREATE TABLE Tickets (
+    ticket_id INT PRIMARY KEY,
+    bus_id INT,
+    ticket_date DATE,
+    passenger_name VARCHAR(50),
+    FOREIGN KEY (bus_id) REFERENCES Buses(bus_id)
+);
+
+-- Insert sample data
+INSERT INTO Routes VALUES (1, 'Downtown Loop');
+INSERT INTO Buses VALUES (1, 1, 50);
+INSERT INTO Tickets VALUES (1, 1, '2025-01-01', 'Leo');
+
+-- Query: Count tickets per route
+SELECT r.route_name, COUNT(t.ticket_id) AS ticket_count
+FROM Routes r
+JOIN Buses b ON r.route_id = b.route_id
+LEFT JOIN Tickets t ON b.bus_id = t.bus_id
+GROUP BY r.route_name;

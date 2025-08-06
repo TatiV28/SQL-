@@ -1,0 +1,31 @@
+-- Create tables for donors, campaigns, and donations
+CREATE TABLE Donors (
+    donor_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Campaigns (
+    campaign_id INT PRIMARY KEY,
+    campaign_name VARCHAR(50)
+);
+
+CREATE TABLE Donations (
+    donation_id INT PRIMARY KEY,
+    donor_id INT,
+    campaign_id INT,
+    amount DECIMAL(10, 2),
+    donation_date DATE,
+    FOREIGN KEY (donor_id) REFERENCES Donors(donor_id),
+    FOREIGN KEY (campaign_id) REFERENCES Campaigns(campaign_id)
+);
+
+-- Insert sample data
+INSERT INTO Donors VALUES (1, 'Olivia');
+INSERT INTO Campaigns VALUES (1, 'Education Fund');
+INSERT INTO Donations VALUES (1, 1, 1, 500.00, '2025-01-01');
+
+-- Query: Sum donations by campaign
+SELECT c.campaign_name, SUM(d.amount) AS total_donations
+FROM Campaigns c
+LEFT JOIN Donations d ON c.campaign_id = d.campaign_id
+GROUP BY c.campaign_name;

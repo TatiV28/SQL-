@@ -1,0 +1,31 @@
+-- Create tables for students, courses, and grades
+CREATE TABLE Students (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE Courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(50)
+);
+
+CREATE TABLE Grades (
+    grade_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    grade DECIMAL(5, 2),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+);
+
+-- Insert sample data
+INSERT INTO Students VALUES (1, 'Emma'), (2, 'Liam');
+INSERT INTO Courses VALUES (1, 'Math'), (2, 'Science');
+INSERT INTO Grades VALUES (1, 1, 1, 85.5), (2, 1, 2, 90.0), (3, 2, 1, 78.0);
+
+-- Query: Calculate average GPA per student
+SELECT s.name, AVG(g.grade) AS gpa
+FROM Students s
+JOIN Grades g ON s.student_id = g.student_id
+GROUP BY s.name
+HAVING AVG(g.grade) >= 80;
